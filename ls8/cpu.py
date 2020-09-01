@@ -7,7 +7,27 @@ class CPU:
 
     def __init__(self):
         """Construct a new CPU."""
-        pass
+        self.cpu = [0] * 256 # 256 = 32 * 8,
+        # self.mar = {}
+        # self.mdr = {}
+        self.reg = {
+            0 : [0] * 32, 
+            1 : [0] * 32,
+            2 : [0] * 32, 
+            3 : [0] * 32, 
+            4 : [0] * 32, 
+            5 : [0] * 32, 
+            6 : [0] * 32, 
+            7: [0] * 32 
+        }
+        
+        self.pc : [0] * 24
+        self.CCR : [0] * 8
+        self.ram = {}
+        # self.SP: 
+        #self.fl = {}
+        #self.ie = {}
+        # TODO add initialization of stack pointer here
 
     def load(self):
         """Load a program into memory."""
@@ -36,7 +56,12 @@ class CPU:
 
         if op == "ADD":
             self.reg[reg_a] += self.reg[reg_b]
-        #elif op == "SUB": etc
+        elif op == "SUB":
+            self.reg[reg_a] -= self.reg[reg_b]
+        elif op == "MUL":
+            self.reg[reg_a] *= self.reg[reg_b]
+        elif op == "DIV":
+            self.reg[reg_a] /= self.reg[reg_b]
         else:
             raise Exception("Unsupported ALU operation")
 
@@ -60,6 +85,14 @@ class CPU:
 
         print()
 
+    def ram_read(self, address):
+        return address
+    
+    def ram_write(self, value, address):
+        self.ram[address] = value
+
     def run(self):
         """Run the CPU."""
-        pass
+        cpu = CPU()
+        print(cpu.ram[0])
+        print('hello')

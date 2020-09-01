@@ -65,6 +65,15 @@ but you'll have to implement those three above instructions first!
 * Read this whole file.
 * Skim the spec.
 
+folder: ls8
+files: 
+- cpu.py: 
+    Does: Load a program into memory, ALU operations, Handy function to print out the CPU state, help debugging, Run the CPU
+    Implementation needed: __int__(), run()
+- ls8.py: 
+    Does: Switches on the computer
+    Implementation needed: none
+
 ## Step 1: Add the constructor to `cpu.py`
 
 Add list properties to the `CPU` class to hold 256 bytes of memory and 8
