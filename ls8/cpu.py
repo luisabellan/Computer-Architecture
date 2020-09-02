@@ -7,25 +7,26 @@ class CPU:
 
     def __init__(self):
         """Construct a new CPU."""
-        self.cpu = [0] * 256 # 256 = 32 * 8,
-        # self.mar = {}
-        # self.mdr = {}
+        # self.cpu = [0] * 256 # 256 = 32 * 8,
+        self.pc = 0
+        self.mar = [0] * 8
+        self.mdr = [0] * 8 
+        self.ir = [0] * 8 
         self.reg = {
-            0 : [0] * 32, 
-            1 : [0] * 32,
-            2 : [0] * 32, 
-            3 : [0] * 32, 
-            4 : [0] * 32, 
-            5 : [0] * 32, 
-            6 : [0] * 32, 
-            7: [0] * 32 
+            0 : [0] * 8, 
+            1 : [0] * 8,
+            2 : [0] * 8, 
+            3 : [0] * 8, 
+            4 : [0] * 8, 
+            5 : [0] * 8, # reserved as the interrupt mask (IM)
+            6 : [0] * 8, # reserved as the interrupt status (IS)
+            7 : [0] * 8  # reserved as the stack pointer (SP)
         }
         
-        self.pc : [0] * 24
-        self.CCR : [0] * 8
-        self.ram = {}
+        self.ram = [0] * 8
+        # self.ccr : [0] * 8
         # self.SP: 
-        #self.fl = {}
+        self.fl = False
         #self.ie = {}
         # TODO add initialization of stack pointer here
 
@@ -86,13 +87,19 @@ class CPU:
         print()
 
     def ram_read(self, address):
-        return address
+        # print(self.ram[address])
+        if type(address) == int:
+            return self.ram[address]
     
     def ram_write(self, value, address):
         self.ram[address] = value
 
     def run(self):
         """Run the CPU."""
-        cpu = CPU()
-        print(cpu.ram[0])
-        print('hello')
+        self.trace()
+
+       
+        # self.mar = self.pc
+        # self.mdr = ram[self.pc] 
+        # self.ir = program[self.pc]
+
