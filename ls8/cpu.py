@@ -112,6 +112,7 @@ class CPU:
                 print(f'LDI done')
 
             elif op == "PRN":
+                print(f'start f PRN')
                 print(int(self.reg[reg_a]))
                 self.pc += 2
                 print('PRN done')
