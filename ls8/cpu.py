@@ -7,7 +7,28 @@ class CPU:
 
     def __init__(self):
         """Construct a new CPU."""
-        pass
+        # self.cpu = [0] * 256 # 256 = 32 * 8,
+        self.pc = 0
+        self.mar = [0] * 8
+        self.mdr = [0] * 8 
+        self.ir = [0] * 8 
+        self.reg = {
+            0 : [0] * 8, 
+            1 : [0] * 8,
+            2 : [0] * 8, 
+            3 : [0] * 8, 
+            4 : [0] * 8, 
+            5 : [0] * 8, # reserved as the interrupt mask (IM)
+            6 : [0] * 8, # reserved as the interrupt status (IS)
+            7 : [0] * 8  # reserved as the stack pointer (SP)
+        }
+        
+        self.fl = 0 # 0 for false and 1 for true
+        self.mar = self.pc
+        self.reg[7] = 0xF4
+        self.ram = [0] * 8
+        # self.ccr : [0] * 8
+        # self.ie = {}
 
     def load(self):
         """Load a program into memory."""
@@ -36,7 +57,12 @@ class CPU:
 
         if op == "ADD":
             self.reg[reg_a] += self.reg[reg_b]
-        #elif op == "SUB": etc
+        elif op == "SUB":
+            self.reg[reg_a] -= self.reg[reg_b]
+        elif op == "MUL":
+            self.reg[reg_a] *= self.reg[reg_b]
+        elif op == "DIV":
+            self.reg[reg_a] /= self.reg[reg_b]
         else:
             raise Exception("Unsupported ALU operation")
 
@@ -60,6 +86,27 @@ class CPU:
 
         print()
 
+    def ram_read(self, address):
+        # if type(address) == int:
+        #     return self.ram[address]
+        print(self.ram[address])
+    
+    def ram_write(self, value, address):
+        self.ram[address] = value
+
     def run(self):
         """Run the CPU."""
-        pass
+
+        # self.trace()
+
+       
+        # print(self.mar)
+        # print(self.ram[self.pc])
+        # print(self.reg[7])
+       
+        # self.mdr = ram[self.pc] 
+        print(self.ram)
+        a = self.ram_read(self.pc)
+        print(bin(a))
+        # self.ir = program[self.pc]
+
