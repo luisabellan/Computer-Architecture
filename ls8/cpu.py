@@ -23,12 +23,12 @@ class CPU:
             7 : [0] * 8  # reserved as the stack pointer (SP)
         }
         
+        self.fl = 0 # 0 for false and 1 for true
+        self.mar = self.pc
+        self.reg[7] = 0xF4
         self.ram = [0] * 8
         # self.ccr : [0] * 8
-        # self.SP: 
-        self.fl = False
-        #self.ie = {}
-        # TODO add initialization of stack pointer here
+        # self.ie = {}
 
     def load(self):
         """Load a program into memory."""
@@ -87,19 +87,26 @@ class CPU:
         print()
 
     def ram_read(self, address):
-        # print(self.ram[address])
-        if type(address) == int:
-            return self.ram[address]
+        # if type(address) == int:
+        #     return self.ram[address]
+        print(self.ram[address])
     
     def ram_write(self, value, address):
         self.ram[address] = value
 
     def run(self):
         """Run the CPU."""
-        self.trace()
+
+        # self.trace()
 
        
-        # self.mar = self.pc
+        # print(self.mar)
+        # print(self.ram[self.pc])
+        # print(self.reg[7])
+       
         # self.mdr = ram[self.pc] 
+        print(self.ram)
+        a = self.ram_read(self.pc)
+        print(bin(a))
         # self.ir = program[self.pc]
 
