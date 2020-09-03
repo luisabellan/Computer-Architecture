@@ -55,66 +55,76 @@ class CPU:
 
     def alu(self, op, reg_a = 0, reg_b = 0):
         """ALU operations."""
+        running = True
+        # while here
+        while running:
+            if op == "ADD":
+                self.reg[reg_a] += self.reg[reg_b]
+                self.pc += 3
 
-        if op == "ADD":
-            self.reg[reg_a] += self.reg[reg_b]
-            self.pc += 1
+            elif op == "SUB":
+                self.reg[reg_a] -= self.reg[reg_b]
+                self.pc += 3
 
-        elif op == "SUB":
-            self.reg[reg_a] -= self.reg[reg_b]
-            self.pc += 1
+            elif op == "MUL":
+                self.reg[reg_a] *= self.reg[reg_b]
+                self.pc += 3
 
-        elif op == "MUL":
-            self.reg[reg_a] *= self.reg[reg_b]
-            self.pc += 1
+            elif op == "DIV":
+                if self.reg[reg_b] == 0:
+                    print("error: cannot divide by zero")
+                self.reg[reg_a] /= self.reg[reg_b]
+                self.pc += 3
 
-        elif op == "DIV":
-            if self.reg[reg_b] == 0:
-                print("error: cannot divide by zero")
-            self.reg[reg_a] /= self.reg[reg_b]
-            self.pc += 1
+            elif op == "CMP":
+                if self.reg[reg_a] < self.reg[reg_b]:
+                    self.fl[-3] = 1
+                    self.pc += 3
+                else:
+                    self.fl[-3] = 0
+                    self.pc += 3
 
-        elif op == "CMP":
-            if self.reg[reg_a] < self.reg[reg_b]:
-                self.fl[-3] = 1
+
+                if self.reg[reg_a] > self.reg[reg_b]:
+                    self.fl[-2] = 1
+                    self.pc += 3
+
+                else:
+                    self.fl[-2] = 0
+                    self.pc += 3
+
+
+                if self.reg[reg_a] == self.reg[reg_b]:
+                    self.fl[-1] = 1
+                    self.pc += 3
+
+                else:
+                    self.fl[-1] = 0
+                    self.pc += 3
+
+            elif op == "LDI":
+                # print(reg_a)
+                # print(reg_b)
+                self.reg[reg_a] = bin(reg_a)
+                self.reg[reg_b] = bin(reg_b)
+                # print(self.reg[reg_a])
+                self.pc += 3
+                print(f'LDI done')
+
+            elif op == "PRN":
+                print(int(self.reg[reg_a]))
+                self.pc += 2
+                print('PRN done')
+
+            elif op == "HLT":
+                running = False
                 self.pc += 1
+                print('HLT done')
+
+
             else:
-                self.fl[-3] = 0
-                self.pc += 1
-
-
-            if self.reg[reg_a] > self.reg[reg_b]:
-                self.fl[-2] = 1
-                self.pc += 1
-
-            else:
-                self.fl[-2] = 0
-                self.pc += 1
-
-
-            if self.reg[reg_a] == self.reg[reg_b]:
-                self.fl[-1] = 1
-                self.pc += 1
-
-            else:
-                self.fl[-1] = 0
-                self.pc += 1
-
-        elif op == "LDI":
-            self.reg[reg_a] = bin(self.reg[reg_a])
-            self.reg[reg_b] = bin(self.reg[reg_b])
-            self.pc += 1
-
-        elif op == "PRN":
-            print(int(self.reg[reg_a]))
-            self.pc += 1
-
-        elif op == "HLT":
-            return
-
-
-        else:
-            raise Exception("Unsupported ALU operation")
+                raise Exception("Unsupported ALU operation")
+                sys.exit(1)
 
     def trace(self):
         """
@@ -169,11 +179,12 @@ class CPU:
         operand_a = self.ram_read(self.pc+1)
         operand_b = self.ram_read(self.pc+2)
         # print(bin(self.ir))
-        # print(operand_a)
-        # print(operand_b)
+        print(f'operand_a:{operand_a}')
+        print(f'operand_b:{operand_b}')
         self.alu('LDI', operand_a, operand_b)
         self.alu('PRN', operand_a)
-        self.alu('HALT')
+        self.alu('HLT')
+
 
         
        
