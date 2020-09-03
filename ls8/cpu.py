@@ -53,22 +53,33 @@ class CPU:
             address += 1
 
 
-    def alu(self, op, reg_a, reg_b):
+    def alu(self, op, reg_a = 0, reg_b = 0):
         """ALU operations."""
 
         if op == "ADD":
             self.reg[reg_a] += self.reg[reg_b]
+            self.pc += 1
+
         elif op == "SUB":
             self.reg[reg_a] -= self.reg[reg_b]
+            self.pc += 1
+
         elif op == "MUL":
             self.reg[reg_a] *= self.reg[reg_b]
+            self.pc += 1
+
         elif op == "DIV":
             self.reg[reg_a] /= self.reg[reg_b]
+            self.pc += 1
+
         elif op == "CMP":
             if self.reg[reg_a] < self.reg[reg_b]:
                 self.fl[-3] = 1
+                self.pc += 1
             else:
                 self.fl[-3] = 0
+                self.pc += 1
+
 
             if self.reg[reg_a] > self.reg[reg_b]:
                 self.fl[-2] = 1
@@ -83,7 +94,9 @@ class CPU:
             self.reg[reg_a] = bin(self.reg[reg_a])
             self.reg[reg_b] = bin(self.reg[reg_b])
         elif op == "PRN":
-            print(self.reg[reg_a])
+            print(int(self.reg[reg_a]))
+        elif op == "HLT":
+            return
 
 
         else:
@@ -141,10 +154,12 @@ class CPU:
 
         operand_a = self.ram_read(self.pc+1)
         operand_b = self.ram_read(self.pc+2)
-        print(bin(self.ir))
-        print(operand_a)
-        print(operand_b)
+        # print(bin(self.ir))
+        # print(operand_a)
+        # print(operand_b)
         self.alu('LDI', operand_a, operand_b)
+        self.alu('PRN', operand_a)
+        self.alu('HALT')
 
         
        
