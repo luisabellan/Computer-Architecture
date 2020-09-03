@@ -23,7 +23,8 @@ class CPU:
             7 : [0] * 8  # reserved as the stack pointer (SP)
         }
         
-        self.fl = 0 # 0 for false and 1 for true
+        # boot
+        self.fl = [0] * 8 # 0 for false and 1 for true
         self.mar = self.pc
         self.reg[7] = 0xF4
         self.ram = [0] * 8
@@ -63,6 +64,28 @@ class CPU:
             self.reg[reg_a] *= self.reg[reg_b]
         elif op == "DIV":
             self.reg[reg_a] /= self.reg[reg_b]
+        elif op == "CMP":
+            if self.reg[reg_a] < self.reg[reg_b]:
+                self.fl[-3] = 1
+            else:
+                self.fl[-3] = 0
+
+            if self.reg[reg_a] > self.reg[reg_b]:
+                self.fl[-2] = 1
+            else:
+                self.fl[-2] = 0
+
+            if self.reg[reg_a] == self.reg[reg_b]:
+                self.fl[-1] = 1
+            else:
+                self.fl[-1] = 0
+        elif op == "LDI":
+            self.reg[reg_a] = bin(self.reg[reg_a])
+            self.reg[reg_b] = bin(self.reg[reg_b])
+        elif op == "PRN":
+            print(self.reg[reg_a])
+
+
         else:
             raise Exception("Unsupported ALU operation")
 
@@ -89,9 +112,14 @@ class CPU:
     def ram_read(self, address):
         # if type(address) == int:
         #     return self.ram[address]
-        print(self.ram[address])
+        # print(self.ram[address])
+        self.mar = address
+        self.ir = self.ram[address]
+        return self.ir
     
     def ram_write(self, value, address):
+        self.mdr = value
+        self.mar = address
         self.ram[address] = value
 
     def run(self):
@@ -105,8 +133,19 @@ class CPU:
         # print(self.reg[7])
        
         # self.mdr = ram[self.pc] 
-        print(self.ram)
-        a = self.ram_read(self.pc)
-        print(bin(a))
-        # self.ir = program[self.pc]
+        binary_program = [bin(i) for i in self.ram]
+        decimal_program = [i for i in self.ram]
+        print(binary_program)
+        # print(decimal_program)
+
+
+        operand_a = self.ram_read(self.pc+1)
+        operand_b = self.ram_read(self.pc+2)
+        print(bin(self.ir))
+        print(operand_a)
+        print(operand_b)
+        self.alu('LDI', operand_a, operand_b)
+
+        
+       
 
