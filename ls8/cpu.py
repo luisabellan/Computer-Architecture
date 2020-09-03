@@ -69,6 +69,8 @@ class CPU:
             self.pc += 1
 
         elif op == "DIV":
+            if self.reg[reg_b] == 0:
+                print("error: cannot divide by zero")
             self.reg[reg_a] /= self.reg[reg_b]
             self.pc += 1
 
@@ -83,18 +85,30 @@ class CPU:
 
             if self.reg[reg_a] > self.reg[reg_b]:
                 self.fl[-2] = 1
+                self.pc += 1
+
             else:
                 self.fl[-2] = 0
+                self.pc += 1
+
 
             if self.reg[reg_a] == self.reg[reg_b]:
                 self.fl[-1] = 1
+                self.pc += 1
+
             else:
                 self.fl[-1] = 0
+                self.pc += 1
+
         elif op == "LDI":
             self.reg[reg_a] = bin(self.reg[reg_a])
             self.reg[reg_b] = bin(self.reg[reg_b])
+            self.pc += 1
+
         elif op == "PRN":
             print(int(self.reg[reg_a]))
+            self.pc += 1
+
         elif op == "HLT":
             return
 
