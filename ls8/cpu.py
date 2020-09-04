@@ -162,7 +162,7 @@ class CPU:
     def run(self):
         """Run the CPU."""
 
-        # self.trace()
+        self.trace()
 
        
         # print(self.mar)
@@ -178,9 +178,9 @@ class CPU:
 
         operand_a = self.ram_read(self.pc+1)
         operand_b = self.ram_read(self.pc+2)
-        # print(bin(self.ir))
-        print(f'operand_a:{operand_a}')
-        print(f'operand_b:{operand_b}')
+        print(bin(self.ir))
+        # print(f'operand_a:{operand_a}')
+        # print(f'operand_b:{operand_b}')
         self.alu('LDI', operand_a, operand_b)
         self.alu('PRN', operand_a)
         self.alu('HLT')
