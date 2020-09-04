@@ -56,7 +56,7 @@ class CPU:
 
     def alu(self, op, reg_a = 0, reg_b = 0):
         """ALU operations."""
-        running = True
+        # running = True
         # while here
         # while running:
         if op == "ADD":
@@ -107,19 +107,19 @@ class CPU:
                         
             self.reg[reg_a] = reg_b
             
-            print(self.reg[reg_a])
+            # print(self.reg[reg_a])
             self.pc += 3
-            print(f'LDI done')
+            # print(f'LDI done')
 
         elif op == "PRN":
             print(self.reg[reg_a])
             self.pc += 2
-            print('PRN done')
+            # print('PRN done')
 
         elif op == "HLT":
-            running = False
+            # running = False
             self.pc += 1
-            print('HLT done')
+            # print('HLT done')
 
 
         else:
@@ -178,9 +178,7 @@ class CPU:
 
         operand_a = self.ram_read(self.pc+1)
         operand_b = self.ram_read(self.pc+2)
-        print(bin(self.ir))
-        # print(f'operand_a:{operand_a}')
-        # print(f'operand_b:{operand_b}')
+        
         self.alu('LDI', operand_a, operand_b)
         self.alu('PRN', operand_a)
         self.alu('HLT')
