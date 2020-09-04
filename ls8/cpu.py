@@ -162,7 +162,7 @@ class CPU:
     def run(self):
         """Run the CPU."""
 
-        self.trace()
+        # self.trace()
 
        
         # print(self.mar)
@@ -172,7 +172,7 @@ class CPU:
         # self.mdr = ram[self.pc] 
         binary_program = [bin(i) for i in self.ram]
         decimal_program = [i for i in self.ram]
-        print(binary_program)
+        # print(binary_program)
         # print(decimal_program)
 
 
