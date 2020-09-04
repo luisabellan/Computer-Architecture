@@ -12,16 +12,17 @@ class CPU:
         self.mar = [0] * 8
         self.mdr = [0] * 8 
         self.ir = [0] * 8 
-        self.reg = {
-            0 : [0] * 8, 
-            1 : [0] * 8,
-            2 : [0] * 8, 
-            3 : [0] * 8, 
-            4 : [0] * 8, 
-            5 : [0] * 8, # reserved as the interrupt mask (IM)
-            6 : [0] * 8, # reserved as the interrupt status (IS)
-            7 : [0] * 8  # reserved as the stack pointer (SP)
-        }
+        # self.reg = {
+        #     0 : [0], 
+        #     1 : [0],
+        #     2 : [0], 
+        #     3 : [0], 
+        #     4 : [0], 
+        #     5 : [0], # reserved as the interrupt mask (IM)
+        #     6 : [0], # reserved as the interrupt status (IS)
+        #     7 : [0]  # reserved as the stack pointer (SP)
+        # }
+        self.reg = [0] * 8
         
         # boot
         self.fl = [0] * 8 # 0 for false and 1 for true
@@ -57,75 +58,73 @@ class CPU:
         """ALU operations."""
         running = True
         # while here
-        while running:
-            if op == "ADD":
-                self.reg[reg_a] += self.reg[reg_b]
+        # while running:
+        if op == "ADD":
+            self.reg[reg_a] += self.reg[reg_b]
+            self.pc += 3
+
+        elif op == "SUB":
+            self.reg[reg_a] -= self.reg[reg_b]
+            self.pc += 3
+
+        elif op == "MUL":
+            self.reg[reg_a] *= self.reg[reg_b]
+            self.pc += 3
+
+        elif op == "DIV":
+            if self.reg[reg_b] == 0:
+                print("error: cannot divide by zero")
+            self.reg[reg_a] /= self.reg[reg_b]
+            self.pc += 3
+
+        elif op == "CMP":
+            if self.reg[reg_a] < self.reg[reg_b]:
+                self.fl[-3] = 1
+                self.pc += 3
+            else:
+                self.fl[-3] = 0
                 self.pc += 3
 
-            elif op == "SUB":
-                self.reg[reg_a] -= self.reg[reg_b]
+
+            if self.reg[reg_a] > self.reg[reg_b]:
+                self.fl[-2] = 1
                 self.pc += 3
-
-            elif op == "MUL":
-                self.reg[reg_a] *= self.reg[reg_b]
-                self.pc += 3
-
-            elif op == "DIV":
-                if self.reg[reg_b] == 0:
-                    print("error: cannot divide by zero")
-                self.reg[reg_a] /= self.reg[reg_b]
-                self.pc += 3
-
-            elif op == "CMP":
-                if self.reg[reg_a] < self.reg[reg_b]:
-                    self.fl[-3] = 1
-                    self.pc += 3
-                else:
-                    self.fl[-3] = 0
-                    self.pc += 3
-
-
-                if self.reg[reg_a] > self.reg[reg_b]:
-                    self.fl[-2] = 1
-                    self.pc += 3
-
-                else:
-                    self.fl[-2] = 0
-                    self.pc += 3
-
-
-                if self.reg[reg_a] == self.reg[reg_b]:
-                    self.fl[-1] = 1
-                    self.pc += 3
-
-                else:
-                    self.fl[-1] = 0
-                    self.pc += 3
-
-            elif op == "LDI":
-                # print(reg_a)
-                # print(reg_b)
-                self.reg[reg_a] = bin(reg_a)
-                self.reg[reg_b] = bin(reg_b)
-                # print(self.reg[reg_a])
-                self.pc += 3
-                print(f'LDI done')
-
-            elif op == "PRN":
-                print(f'start f PRN')
-                print(int(self.reg[reg_a]))
-                self.pc += 2
-                print('PRN done')
-
-            elif op == "HLT":
-                running = False
-                self.pc += 1
-                print('HLT done')
-
 
             else:
-                raise Exception("Unsupported ALU operation")
-                sys.exit(1)
+                self.fl[-2] = 0
+                self.pc += 3
+
+
+            if self.reg[reg_a] == self.reg[reg_b]:
+                self.fl[-1] = 1
+                self.pc += 3
+
+            else:
+                self.fl[-1] = 0
+                self.pc += 3
+
+        elif op == "LDI":
+                        
+            self.reg[reg_a] = reg_b
+            
+            print(self.reg[reg_a])
+            self.pc += 3
+            print(f'LDI done')
+
+        elif op == "PRN":
+            print(self.reg[reg_a])
+            self.pc += 2
+            print('PRN done')
+
+        elif op == "HLT":
+            running = False
+            self.pc += 1
+            print('HLT done')
+
+
+        else:
+            raise Exception("Unsupported ALU operation")
+            # sys.exit(1)
 
     def trace(self):
         """
