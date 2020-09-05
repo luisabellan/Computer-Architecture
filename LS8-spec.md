@@ -189,7 +189,7 @@ Add the value in two registers and store the result in registerA.
 
 Machine code:
 ```
-10100000 00000aaa 00000bbb
+10010000 00000aaa 00000bbb
 A0 0a 0b
 ```
 
