@@ -183,40 +183,39 @@ class CPU:
         # print(instruction >> 5 & 0b1)
         print(instruction >> 5 == 1)
 
-        handle_by_alu = False
         op = ''
         print(f'instruction: {bin(instruction)}')
-        running = True
-        while running:
-            if instruction >> 5 == 0:
-                # handled by alu()
-                handled_by_alu = True
-                if bin(instruction)[-4:] == '0000':
-                    op = 'ADD'
-                    self.alu('ADD', operand_a, operand_b)
-                elif bin(instruction)[-4:] == '0010':
-                    op = 'MUL'
-                    self.alu('MUL', operand_a, operand_b)
+        
+        if instruction >> 5 == 0:
+            # handled by alu()
+            handled_by_alu = True
+            if bin(instruction)[-4:] == '0000':
+                op = 'ADD'
+                self.alu('ADD', operand_a, operand_b)
+            elif bin(instruction)[-4:] == '0010':
+                op = 'MUL'
+                self.alu('MUL', operand_a, operand_b)
 
-                elif bin(instruction)[-4:] == '1000':
-                    op = 'AND'
-            else:
-                # not handled by alu()
-                handled_by_alu = False
-                if bin(instruction)[-4:] == '0010':
-                    op = 'LDI'
-                    self.non_alu('LDI', operand_a, operand_b)
-                    print(self.reg[operand_a] == operand_b)
-                elif bin(instruction)[-4:] == '0111':
-                    op = 'PRN'
-                    self.non_alu('PRN', operand_a)
+            elif bin(instruction)[-4:] == '1000':
+                op = 'AND'
+        else:
+            # not handled by alu()
+            handled_by_alu = False
+            if bin(instruction)[-4:] == '0010':
+                op = 'LDI'
+                self.non_alu('LDI', operand_a, operand_b)
+                # print(self.reg[operand_a] == operand_b)
+            elif bin(instruction)[-4:] == '0111':
+                op = 'PRN'
+                self.non_alu('PRN', operand_a)
+                print('here')
 
-                elif bin(instruction)[-4:] == '0001':
-                    op = 'HLT'
-                    self.non_alu('HLT', operand_a)
+            elif bin(instruction)[-4:] == '0001':
+                op = 'HLT'
+                self.non_alu('HLT', operand_a)
 
 
-                
+            
 
         
 
