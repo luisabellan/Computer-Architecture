@@ -33,7 +33,7 @@ class CPU:
         # self.ccr : [0] * 8
         # self.ie = {}
 
-    def load(self):
+    def load(self, filename):
         """Load a program into memory."""
 
         address = 0
@@ -52,7 +52,8 @@ class CPU:
         # ]
 
         # Using readlines() 
-        program = open("ls8/examples/print8.ls8", "r").readlines() 
+        program = open(f"ls8/examples/{filename}", "r").readlines() 
+        print(program)
         # count = 0
         # Strips the newline character 
         # for line in program: 
@@ -63,15 +64,11 @@ class CPU:
         # program = 
         for i in program:
             out.append(bin(int(i[:7],2)))
-        
-        print(out)
-
-        for instruction in program:
-            # print(bin(instruction[:7]))
-            instruction = int(instruction)
-
-     
-          
+        for instruction in out:
+            # instruction = int(instruction,2)
+            # print(bin(instruction))
+            # print(type(instruction))
+            # instruction = bin(instruction)
             self.ram[address] = instruction
             address += 1
 
@@ -194,8 +191,8 @@ class CPU:
        
         # self.mdr = ram[self.pc] 
 
-        binary_program = [bin(i) for i in self.ram]
-        decimal_program = [i for i in self.ram]
+        # binary_program = [bin(i) for i in self.ram]
+        # decimal_program = [i for i in self.ram]
         # print(binary_program)
         # print(decimal_program)
         
@@ -207,7 +204,7 @@ class CPU:
           
 
             op = ''
-            
+       
             if self.ram_read(self.pc) >> 5 == 0b101:
                 # handled by alu()
                 handled_by_alu = True
@@ -237,37 +234,39 @@ class CPU:
                     # print(f'instruction >> 5: {bin(instruction>>5)}')
                     self.alu('MUL', operand_a, operand_b)
 
-                if bin(instruction)[-4:] == '1000':
-                    op = 'AND'
-            
-            instruction = self.ram_read(self.pc)
-            if instruction >> 5 == 0b100:
-                # not handled by alu()
-                handled_by_alu = False
-                  
-               
-                #print(f'not handled by alu')
-           
-                instruction = self.ram_read(self.pc)
-                if bin(instruction)[-4:] == '0010':
-                    op = 'LDI'
-                    operand_a = self.ram_read(self.pc+1)            
-                    operand_b = self.ram_read(self.pc+2) 
-                   
-                    self.non_alu('LDI', operand_a, operand_b)
-                    # print(self.reg[operand_a] == operand_b)
-                instruction = self.ram_read(self.pc)
-                if bin(instruction)[-4:] == '0111':
-                    op = 'PRN'
-                   
-                    self.non_alu('PRN', operand_a)
-                instruction = self.ram_read(self.pc)
-                if bin(instruction)[-4:] == '0001':
-                        op = 'HLT'
-                        
-                        self.non_alu('HLT', operand_a)
-
+                # if bin(instruction)[-4:] == '1000':
+                #     op = 'AND'
+        
+        instruction = self.ram_read(self.pc)
+        print(bin(instruction))
+        print(instruction)
+        if instruction >> 5 == 0b100:
+            # not handled by alu()
+            handled_by_alu = False
                 
+            
+            #print(f'not handled by alu')
+        
+            instruction = self.ram_read(self.pc)
+            if bin(instruction)[-4:] == '0010':
+                op = 'LDI'
+                operand_a = self.ram_read(self.pc+1)            
+                operand_b = self.ram_read(self.pc+2) 
+                
+                self.non_alu('LDI', operand_a, operand_b)
+                # print(self.reg[operand_a] == operand_b)
+            instruction = self.ram_read(self.pc)
+            if bin(instruction)[-4:] == '0111':
+                op = 'PRN'
+                
+                self.non_alu('PRN', operand_a)
+            instruction = self.ram_read(self.pc)
+            if bin(instruction)[-4:] == '0001':
+                    op = 'HLT'
+                    
+                    self.non_alu('HLT', operand_a)
+
+            
 
 
                 
