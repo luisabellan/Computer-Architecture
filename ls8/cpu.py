@@ -40,17 +40,33 @@ class CPU:
 
         # For now, we've just hardcoded a program:
 
-        program = [
-            # From print8.ls8
-            0b10000010, # LDI R0,8
-            0b00000000,
-            0b00001000,
-            0b01000111, # PRN R0
-            0b00000000,
-            0b00000001, # HLT
-        ]
+
+        # program = [
+        #     # From print8.ls8
+        #     0b10000010, # LDI R0,8
+        #     0b00000000,
+        #     0b00001000,
+        #     0b01000111, # PRN R0
+        #     0b00000000,
+        #     0b00000001, # HLT
+        # ]
+
+        # Using readlines() 
+        file1 = open('./examples/print8.ls8', 'r') 
+        program = file1.readlines() 
+    
+        # count = 0
+        # Strips the newline character 
+        # for line in program: 
+        #     print("Line{}: {}".format(count, line.strip())) 
+            
+            
+        
+        # program = 
 
         for instruction in program:
+            instruction = '0b' + instruction
+            print(f'instruction:{instruction}')
             self.ram[address] = instruction
             address += 1
 
@@ -152,18 +168,13 @@ class CPU:
         print()
 
     def ram_read(self, address):
-        # if type(address) == int:
-        #     return self.ram[address]
-        # print(self.ram[address])
         self.mar = address
-        #if self.ram[address]:
         self.ir = self.ram[address]
         return self.ir
     
     def ram_write(self, value, address):
         self.mdr = value
         self.mar = address
-        
         self.ram[address] = value
 
     def run(self):
@@ -183,9 +194,6 @@ class CPU:
         # print(decimal_program)
         
         
-        #print(bin(instruction))
-        #print(bin(operand_a))
-        #print(bin(operand_b))
         while self.ram_read(self.pc) != 0b00000001:
             
             #print(instruction >> 5 & 0b1)
@@ -262,12 +270,3 @@ class CPU:
 
         # print(instruction >> 5 & 0b1)
         
-        # handle_alu = instruction >> 5 & 0b1
-        # if handle_alu == 1:
-        #     pass
-        #     # self.alu()
-        # elif handle_alu ==0:
-        #     pass
-
-        # print(instruction & 5)
-       
