@@ -57,8 +57,8 @@ class CPU:
 
     def alu(self, op, reg_a = 0, reg_b = 0):
         """ALU operations."""
-        print(f'reg_a: {reg_a}')
-        print(f'reg_b: {reg_b}')
+        #print(f'reg_a: {reg_a}')
+        #print(f'reg_b: {reg_b}')
         if op == "ADD":
             self.reg[reg_a] += self.reg[reg_b]
             self.pc += 3
@@ -113,18 +113,18 @@ class CPU:
     def non_alu(self, op, reg_a = 0, reg_b = 0):
         
         if op == "LDI":
-            print(f'reg_a:{reg_a}')                
-            print(f'reg_b:{reg_b}')                
+            # print(f'reg_a:{reg_a}')                
+            # print(f'reg_b:{reg_b}')                
             self.reg[reg_a] = reg_b
             
             # print(self.reg[reg_a])
             self.pc += 3
-            print(f'LDI done')
+            # print(f'LDI done')
 
         elif op == "PRN":
             print(self.reg[reg_a])
             self.pc += 2
-            print('PRN done')
+            # print('PRN done')
 
         elif op == "HLT":
             # running = False
@@ -197,21 +197,21 @@ class CPU:
             if self.ram_read(self.pc) >> 5 == 0b101:
                 # handled by alu()
                 handled_by_alu = True
-                print(f'handled by alu')
+                # print(f'handled by alu')
 
                 instruction = self.ram_read(self.pc)
                 operand_a = self.ram_read(self.pc+1)
                 operand_b = self.ram_read(self.pc+2)
-                print(f'instruction: {bin(instruction)}')
-                print(f'instruction >> 5: {bin(instruction>>5)}')
+                # print(f'instruction: {bin(instruction)}')
+                # print(f'instruction >> 5: {bin(instruction>>5)}')
                 
                 if bin(instruction)[-4:] == '0000':
                     op = 'ADD'
                     instruction = self.ram_read(self.pc)
                     operand_a = self.ram_read(self.pc+1)
                     operand_b = self.ram_read(self.pc+2)
-                    print(f'instruction: {bin(instruction)}')
-                    print(f'instruction >> 5: {bin(instruction>>5)}')   
+                    # print(f'instruction: {bin(instruction)}')
+                    # print(f'instruction >> 5: {bin(instruction>>5)}')   
                     
                     self.alu('ADD', operand_a, operand_b)
                 if bin(instruction)[-4:] == '0010':
@@ -219,8 +219,8 @@ class CPU:
                     instruction = self.ram_read(self.pc)
                     operand_a = self.ram_read(self.pc+1)
                     operand_b = self.ram_read(self.pc+2)
-                    print(f'instruction: {bin(instruction)}')
-                    print(f'instruction >> 5: {bin(instruction>>5)}')
+                    # print(f'instruction: {bin(instruction)}')
+                    # print(f'instruction >> 5: {bin(instruction>>5)}')
                     self.alu('MUL', operand_a, operand_b)
 
                 if bin(instruction)[-4:] == '1000':
@@ -232,14 +232,13 @@ class CPU:
                 handled_by_alu = False
                   
                
-                print(f'not handled by alu')
+                #print(f'not handled by alu')
            
                 instruction = self.ram_read(self.pc)
                 if bin(instruction)[-4:] == '0010':
                     op = 'LDI'
                     operand_a = self.ram_read(self.pc+1)            
                     operand_b = self.ram_read(self.pc+2) 
-                    print('here')
                    
                     self.non_alu('LDI', operand_a, operand_b)
                     # print(self.reg[operand_a] == operand_b)
