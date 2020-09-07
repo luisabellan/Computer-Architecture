@@ -52,24 +52,27 @@ class CPU:
         # ]
 
         # Using readlines() 
-        file1 = open('./examples/print8.ls8', 'r') 
-        program = file1.readlines() 
-        file1.close()
+        program = open("ls8/examples/print8.ls8", "r").readlines() 
         # count = 0
         # Strips the newline character 
         # for line in program: 
         #     print("Line{}: {}".format(count, line.strip())) 
             
             
-        
+        out = []  
         # program = 
+        for i in program:
+            out.append(bin(int(i[:7],2)))
+        
+        print(out)
 
         for instruction in program:
-            instruction = instruction[:7]
-            print(f'instruction:{instruction}')
-            # instruction = int(instruction[:9])
-            
-            self.ram[address] = int(bin(instruction),2)
+            # print(bin(instruction[:7]))
+            instruction = int(instruction)
+
+     
+          
+            self.ram[address] = instruction
             address += 1
 
 
