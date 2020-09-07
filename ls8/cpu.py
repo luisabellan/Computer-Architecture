@@ -54,7 +54,7 @@ class CPU:
         # Using readlines() 
         file1 = open('./examples/print8.ls8', 'r') 
         program = file1.readlines() 
-    
+        file1.close()
         # count = 0
         # Strips the newline character 
         # for line in program: 
@@ -65,9 +65,11 @@ class CPU:
         # program = 
 
         for instruction in program:
-            instruction = '0b' + instruction
+            instruction = instruction[:7]
             print(f'instruction:{instruction}')
-            self.ram[address] = instruction
+            # instruction = int(instruction[:9])
+            
+            self.ram[address] = int(bin(instruction),2)
             address += 1
 
 
@@ -188,6 +190,7 @@ class CPU:
         # print(self.reg[7])
        
         # self.mdr = ram[self.pc] 
+
         binary_program = [bin(i) for i in self.ram]
         decimal_program = [i for i in self.ram]
         # print(binary_program)
