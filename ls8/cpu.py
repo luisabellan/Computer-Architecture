@@ -10,20 +10,20 @@ class CPU:
         # self.cpu = [0] * 256 # 256 = 32 * 8,
         self.pc = 0
         self.mar = [0] * 8
-        self.mdr = [0] * 8 
-        self.ir = [0] * 8 
+        self.mdr = [0] * 8
+        self.ir = [0] * 8
         # self.reg = {
-        #     0 : [0], 
+        #     0 : [0],
         #     1 : [0],
-        #     2 : [0], 
-        #     3 : [0], 
-        #     4 : [0], 
+        #     2 : [0],
+        #     3 : [0],
+        #     4 : [0],
         #     5 : [0], # reserved as the interrupt mask (IM)
         #     6 : [0], # reserved as the interrupt status (IS)
         #     7 : [0]  # reserved as the stack pointer (SP)
         # }
         self.reg = [0] * 8
-        
+
         # boot
         self.fl = [0] * 8 # 0 for false and 1 for true
         self.mar = self.pc
@@ -51,17 +51,17 @@ class CPU:
         #     0b00000001, # HLT
         # ]
 
-        # Using readlines() 
-        program = open(f"ls8/examples/{filename}", "r").readlines() 
-        print(program)
+        # Using readlines()
+        program = open(f"../ls8/examples/{filename}", "r").readlines()
+        #print(program)
         # count = 0
-        # Strips the newline character 
-        # for line in program: 
-        #     print("Line{}: {}".format(count, line.strip())) 
-            
-            
-        out = []  
-        # program = 
+        # Strips the newline character
+        # for line in program:
+        #     print("Line{}: {}".format(count, line.strip()))
+
+
+        out = []
+        # program =
         for i in program:
             out.append(bin(int(i[:7],2)))
         for instruction in out:
@@ -71,7 +71,7 @@ class CPU:
             # instruction = bin(instruction)
             self.ram[address] = instruction
             address += 1
-
+        print(out)
 
     def alu(self, op, reg_a = 0, reg_b = 0):
         """ALU operations."""
@@ -121,20 +121,20 @@ class CPU:
                 self.fl[-1] = 0
                 self.pc += 3
 
-        
+
 
 
         else:
             raise Exception("Unsupported ALU operation")
-            
+
 
     def non_alu(self, op, reg_a = 0, reg_b = 0):
-        
+
         if op == "LDI":
-            # print(f'reg_a:{reg_a}')                
-            # print(f'reg_b:{reg_b}')                
+            # print(f'reg_a:{reg_a}')
+            # print(f'reg_b:{reg_b}')
             self.reg[reg_a] = reg_b
-            
+
             # print(self.reg[reg_a])
             self.pc += 3
             # print(f'LDI done')
@@ -173,7 +173,7 @@ class CPU:
         self.mar = address
         self.ir = self.ram[address]
         return self.ir
-    
+
     def ram_write(self, value, address):
         self.mdr = value
         self.mar = address
@@ -184,28 +184,28 @@ class CPU:
 
         # self.trace()
 
-       
+
         # print(self.mar)
         # print(self.ram[self.pc])
         # print(self.reg[7])
-       
-        # self.mdr = ram[self.pc] 
+
+        # self.mdr = ram[self.pc]
 
         # binary_program = [bin(i) for i in self.ram]
         # decimal_program = [i for i in self.ram]
         # print(binary_program)
         # print(decimal_program)
-        
-        
+
+
         while self.ram_read(self.pc) != 0b00000001:
-            
+
             #print(instruction >> 5 & 0b1)
             #print(instruction >> 5)
-          
+
 
             op = ''
-       
-            if self.ram_read(self.pc) >> 5 == 0b101:
+            print(self.ram_read(self.pc))
+            if self.ram_read(self.pc)>> 5 == 0b101:
                 # handled by alu()
                 handled_by_alu = True
                 # print(f'handled by alu')
@@ -215,15 +215,15 @@ class CPU:
                 operand_b = self.ram_read(self.pc+2)
                 # print(f'instruction: {bin(instruction)}')
                 # print(f'instruction >> 5: {bin(instruction>>5)}')
-                
+
                 if bin(instruction)[-4:] == '0000':
                     op = 'ADD'
                     instruction = self.ram_read(self.pc)
                     operand_a = self.ram_read(self.pc+1)
                     operand_b = self.ram_read(self.pc+2)
                     # print(f'instruction: {bin(instruction)}')
-                    # print(f'instruction >> 5: {bin(instruction>>5)}')   
-                    
+                    # print(f'instruction >> 5: {bin(instruction>>5)}')
+
                     self.alu('ADD', operand_a, operand_b)
                 if bin(instruction)[-4:] == '0010':
                     op = 'MUL'
@@ -236,42 +236,41 @@ class CPU:
 
                 # if bin(instruction)[-4:] == '1000':
                 #     op = 'AND'
-        
+
         instruction = self.ram_read(self.pc)
         print(bin(instruction))
         print(instruction)
         if instruction >> 5 == 0b100:
             # not handled by alu()
             handled_by_alu = False
-                
-            
+
+
             #print(f'not handled by alu')
-        
+
             instruction = self.ram_read(self.pc)
             if bin(instruction)[-4:] == '0010':
                 op = 'LDI'
-                operand_a = self.ram_read(self.pc+1)            
-                operand_b = self.ram_read(self.pc+2) 
-                
+                operand_a = self.ram_read(self.pc+1)
+                operand_b = self.ram_read(self.pc+2)
+
                 self.non_alu('LDI', operand_a, operand_b)
                 # print(self.reg[operand_a] == operand_b)
             instruction = self.ram_read(self.pc)
             if bin(instruction)[-4:] == '0111':
                 op = 'PRN'
-                
+
                 self.non_alu('PRN', operand_a)
             instruction = self.ram_read(self.pc)
             if bin(instruction)[-4:] == '0001':
                     op = 'HLT'
-                    
+
                     self.non_alu('HLT', operand_a)
 
-            
 
 
-                
 
-            
+
+
+
 
         # print(instruction >> 5 & 0b1)
-        
