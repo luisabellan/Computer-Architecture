@@ -30,7 +30,7 @@ class CPU:
         self.mar = self.pc
         self.reg[7] = 0xF4
         self.ram = [0] * 2048 # 256 bytes * 8 bits/byte = 2048bits
-        self.running = True
+
         # self.ccr : [0] * 8
         # self.ie = {}
 
