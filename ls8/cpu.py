@@ -34,7 +34,6 @@ class CPU:
         # self.ccr : [0] * 8
         # self.ie = {}
 
-# TODO explain: with open(os.path.join(sys.path[0], filename), 'r') as f:
 
     def load(self, filename):
         """Load a program into memory."""
@@ -86,10 +85,11 @@ class CPU:
             print('=', end=" ")
             a = int(self.reg[int(reg_a,2)],2)
             b = int(self.reg[int(reg_b,2)],2)
+            self.reg[int(reg_a,2)] = a * b
             print( a * b)
-            # self.reg[reg_a] =  int(self.reg[int(reg_a,2)],2)  * int(self.reg[int(reg_b,2)],2)]
             # print(f'{self.reg[int(reg_a,2)]}')
             self.pc += 3
+
 
         elif op == "DIV":
             if self.reg[reg_b] == 0:
@@ -142,14 +142,15 @@ class CPU:
             # print(f'LDI done')
 
         elif op == "PRN":
-            print(int(self.reg[int(reg_a,2)],2))
+            print(self.reg[int(reg_a,2)])
             self.pc += 2
-            # print('PRN done')
+            print('PRN done')
 
         elif op == "HLT":
-            running = False
+            
             self.pc += 1
             # print('HLT done')
+            sys.exit(0)
 
 
 
@@ -209,9 +210,12 @@ class CPU:
         # print(binary_program)
         # print(decimal_program)
         # print(self.pc)
+
+        # dont delete this one
         print(self.ram_read(self.pc))
 
         while self.ram_read(self.pc) != 0b1:
+            
 
 
             op = ''
@@ -222,7 +226,13 @@ class CPU:
             # print('cocos')
             # print(bin(int(self.ram_read(self.pc),2)))
             # print(bin(int(self.ram_read(self.pc),2) >> 5)[-1])
+            # print(bin(int(self.ram_read(self.pc),2) >> 5)[-1])
             if bin(int(self.ram_read(self.pc),2) >> 5)[-1] == '1':
+                # print('here')
+                # print(self.ram_read(self.pc))
+
+                if self.ram_read(self.pc) == 0b1:
+                    sys.exit(0)
 
                 # handled by alu()
 
@@ -257,10 +267,10 @@ class CPU:
                 #     op = 'AND'
 
             instruction = self.ram_read(self.pc)
-            if instruction == 0b00000001:
-                sys.exit()
             if bin(int(instruction,2) >> 5)[-1] == '0':
                 # not handled by alu()
+                # print(instruction)
+                
                 handled_by_alu = False
 
 
@@ -277,23 +287,23 @@ class CPU:
 
 
 
-                if bin(int(instruction,2))[-4:] == '0111':
+                elif bin(int(instruction,2))[-4:] == '0111':
                     op = 'PRN'
                     operand_a = self.ram_read(self.pc+1)
                     operand_b = self.ram_read(self.pc+2)
                     self.non_alu('PRN', operand_a)
-                    # print('here')
+                    print('here')
 
 
 
 
-                if bin(int(instruction,2))[-4:] == '0001':
+                elif bin(int(instruction,2))[-4:] == '0001':
                         op = 'HLT'
-                        sys.exit(0)
-                        # operand_a = self.ram_read(self.pc+1)
-                        # self.non_alu('HLT', operand_a)
+                        operand_a = self.ram_read(self.pc+1)
+                        self.non_alu('HLT', operand_a)
+                        
 
-        # sys.exit()
+                        sys.exit()
 
 
 
