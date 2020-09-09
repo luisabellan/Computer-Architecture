@@ -64,7 +64,7 @@ class CPU:
 
             self.ram[address] = instruction
             address += 1
-        print(out)
+        # print(out)
 
     def alu(self, op, reg_a = 0, reg_b = 0):
         """ALU operations."""
@@ -79,14 +79,14 @@ class CPU:
             self.pc += 3
 
         elif op == "MUL":
-            print(int(self.reg[int(reg_a,2)],2), end=' ')
-            print('*', end=' ')
-            print(int(self.reg[int(reg_b,2)],2), end=" ")
-            print('=', end=" ")
+            # print(int(self.reg[int(reg_a,2)],2), end=' ')
+            # print('*', end=' ')
+            # print(int(self.reg[int(reg_b,2)],2), end=" ")
+            # print('=', end=" ")
             a = int(self.reg[int(reg_a,2)],2)
             b = int(self.reg[int(reg_b,2)],2)
             self.reg[int(reg_a,2)] = a * b
-            print(self.reg[int(reg_a,2)])
+            # print(self.reg[int(reg_a,2)])
             # print(f'{self.reg[int(reg_a,2)]}')
             self.pc += 3
 
@@ -143,15 +143,19 @@ class CPU:
             # print(f'LDI done')
 
         elif op == "PRN":
-            print(int(self.reg[int(reg_a,2)],2))
+            # print(type(self.reg[int(reg_a,2)]))
+            if type(self.reg[int(reg_a,2)]) == str:
+                print(int(self.reg[int(reg_a,2)],2))
+            else:
+                print(self.reg[int(reg_a,2)])
+                # print(int(self.reg[int(reg_a,2)],2))
             self.pc += 2
             # print('PRN done')
 
         elif op == "HLT":
             
             self.pc += 1
-            print('HLT done')
-            # sys.exit(0)
+            # print('HLT done')
 
 
 
@@ -178,9 +182,13 @@ class CPU:
         print()
 
     def ram_read(self, address):
+        # print(f'address: {address}')
 
         self.mar = address
-        self.ir = bin(int(self.ram[address],2))
+      
+
+        self.ir = self.ram[address]
+        # print(self.ir)
        
         return self.ir
 
@@ -212,9 +220,7 @@ class CPU:
         # print(self.pc)
 
         # dont delete this one
-        # print('here')
         # print(bin(int(self.ram_read(self.pc),2)))
-        # print('here')
 
 
         while bin(int(self.ram_read(self.pc),2)) != '0b00000001':
@@ -227,7 +233,7 @@ class CPU:
         
             # print(bin(int(self.ram_read(self.pc),2) >> 5)[-1])
             if bin(int(self.ram_read(self.pc),2) >> 5)[-1] == '1':
-                print('here')
+                # print('here')
                 # print(self.ram_read(self.pc))
 
                 # if self.ram_read(self.pc) == 0b1:
@@ -236,7 +242,7 @@ class CPU:
                 # handled by alu()
 
                 handled_by_alu = True
-                print(f'handled by alu')
+                # print(f'handled by alu')
 
                 instruction = self.ram_read(self.pc)
                 operand_a = self.ram_read(self.pc+1)
@@ -253,17 +259,17 @@ class CPU:
                     # print(f'instruction >> 5: {bin(instruction>>5)}')
 
                     self.alu('ADD', operand_a, operand_b)
-                # print('here')
-                print(instruction[-4:])
+                #print('here')
+                #print(instruction[-4:])
                 if instruction[-4:] == '0010':
 
                     op = 'MUL'
-                    print('here')
+                    #print('here')
                     instruction = self.ram_read(self.pc)
                     operand_a = self.ram_read(self.pc+1)
                     operand_b = self.ram_read(self.pc+2)
-                    # print(f'instruction: {bin(instruction)}')
-                    # print(f'instruction >> 5: {bin(instruction>>5)}')
+                    #print(f'instruction: {bin(instruction)}')
+                    #print(f'instruction >> 5: {bin(instruction>>5)}')
                     self.alu('MUL', operand_a, operand_b)
 
                 # if bin(instruction)[-4:] == '1000':
@@ -278,9 +284,9 @@ class CPU:
                 handled_by_alu = False
 
 
-                # print(f'not handled by alu')
-                # print(bin(int(instruction,2))[-4:])
-                instruction = self.ram_read(self.pc)
+                #print(f'not handled by alu')
+                instruction = bin(int(self.ram_read(self.pc),2))
+                #print(bin(int(instruction,2))[-4:])
                 if bin(int(instruction,2))[-4:] == '0010':
                     op = 'LDI'
                     operand_a = self.ram_read(self.pc+1)
@@ -289,28 +295,33 @@ class CPU:
                     self.non_alu('LDI', operand_a, operand_b)
 
 
-                    # print(self.reg[operand_a] == operand_b)
+                    #print(self.reg[operand_a] == operand_b)
 
-
-                instruction = self.ram_read(self.pc)
+                # print(bin(int(self.ram_read(self.pc),2)))
+                instruction = bin(int(self.ram_read(self.pc),2))
                 if bin(int(instruction,2))[-4:] == '0111':
                     op = 'PRN'
                     operand_a = self.ram_read(self.pc+1)
-                    operand_b = self.ram_read(self.pc+2)
                     self.non_alu('PRN', operand_a)
                     # print('PRN executed')
 
 
+                # print(instruction)
+                # print(self.ram_read(self.pc))
 
-        instruction = self.ram_read(self.pc)
-        if bin(int(instruction,2))[-4:] == '0001':
-            op = 'HLT'
-            operand_a = self.ram_read(self.pc+1)
-            self.non_alu('HLT', operand_a)
-            print('HLT executed')
-            
+                instruction = bin(int(self.ram_read(self.pc),2))
+                if instruction == '0b1':
+                    # print(instruction)    
+                    op = 'HLT'
+                    operand_a = self.ram_read(self.pc+1)
+                    # print('here')
+                    # print(operand_a)
+                    # print('here')
+                    self.non_alu('HLT', operand_a)
+                    # print('HLT executed')
+                    
 
-            sys.exit()
+                    sys.exit()
 
 
 
