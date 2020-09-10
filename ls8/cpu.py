@@ -3,6 +3,104 @@
 import sys,os
 from pathlib import Path
 
+
+class Node:
+    def __init__(self, value):
+        self.value = value
+        self.next = None
+
+
+class LinkedList:
+
+    def __init__(self):
+        self.head = None
+        self.tail = None
+
+    def __iter__(self):
+        node = self.head
+        while node:
+            yield node
+            node = node.next
+
+
+class Stack(LinkedList):
+
+    def __init__(self):
+
+        self.size = 0
+        self.storage = LinkedList()
+        # self.head = self.storage.head
+        self.head = self.storage.head #(stack pointer)
+        self.tail = self.storage.tail
+        self.next = None
+        if self.size == 0:
+            self.sp = 0xF4
+        else:
+            self.sp = self.head
+    def __len__(self):
+
+        return self.size
+
+    def push(self, value):
+        self.value = value
+
+
+        # new_node = Node(self.value)
+        # new_node.next = self.head
+        # self.head = new_node
+
+
+
+        # create a node to add
+        new_node = Node(value)
+        # check if list is empty
+        if self.head is None and self.tail is None:
+          self.head = new_node
+          self.tail = new_node
+
+        else:
+          # new_node should point to current head
+          new_node.next = self.head
+          # move head to new node
+          self.head = new_node
+
+        self.size += 1
+
+
+
+    def pop(self):
+
+        # # edge case - empty linked list
+        # if self.head == None:
+        #     return
+        #
+        # # Store head node
+        # temp = self.head
+        #
+        # # If head needs to be removed
+        # self.head = temp.next
+        # temp = None
+        #self.size -= 1
+
+        # if list is empty, do nothing
+        if not self.head:
+          return None
+        # if list only has one element, set head and tail to None
+        if self.head.next is None:
+          head_value = self.head.value
+          self.head = None
+          self.tail = None
+          self.size -= 1
+          return head_value
+        # otherwise we have more elements in the list
+        else:
+            head_value = self.head.value
+            self.head = self.head.next
+            self.size = self.size - 1
+
+            return head_value
+    
+        
 class CPU:
     """Main CPU class."""
 
@@ -26,13 +124,25 @@ class CPU:
         self.reg = [0] * 8
 
         # boot
-        self.fl = [0] * 8 # 0 for false and 1 for true
+        self.fl = [0] * 8              # 0 for false and 1 for true
         self.mar = self.pc
-        self.reg[7] = 0xF4
-        self.ram = [0] * 2048 # 256 bytes * 8 bits/byte = 2048bits
+        self.reg[7] = 0xF4             # '0b11110100' or 244
+        self.ram = [0] * 2048           # 256 bytes * 8 bits/byte = 2048bits
         self.running = True
+        self.stack = Stack()
         # self.ccr : [0] * 8
         # self.ie = {}
+
+    
+
+
+
+    def __len__(self):
+
+        return self.size
+
+    def push(self, value):
+        self.value = value
 
 
     def load(self, filename):
@@ -50,7 +160,7 @@ class CPU:
 
         # New way - using pathlib (compatible with Mac, Win and Linux):
 
-        data_folder = Path("./examples/")
+        data_folder = Path("./examples")
 
         filename = data_folder / filename
 
@@ -156,6 +266,13 @@ class CPU:
             
             self.pc += 1
             # print('HLT done')
+        elif op == "PUSH":
+            self.stack.push(int(reg_a,2))
+            self.pc += 1
+        
+        elif op == "POP":
+            self.stack.pop(int(reg_a,2))
+            self.pc += 1
 
 
 
@@ -229,8 +346,6 @@ class CPU:
             
 
 
-            op = ''
-        
             # print(bin(int(self.ram_read(self.pc),2) >> 5)[-1])
             if bin(int(self.ram_read(self.pc),2) >> 5)[-1] == '1':
                 # print('here')
