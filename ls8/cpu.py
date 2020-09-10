@@ -41,16 +41,6 @@ class CPU:
 
     
 
-
-
-    def __len__(self):
-
-        return self.size
-
-    def push(self, value):
-        self.value = value
-
-
     def load(self, filename):
         """Load a program into memory."""
 
