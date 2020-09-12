@@ -58,8 +58,10 @@ class CPU:
 
         out = []
         # program =
-        for i in program:
-            out.append(bin(int(i[:8],2)))
+        for line in program:
+            if line[0] == '#' or line[0] == '\n':
+                continue
+            out.append(bin(int(line[:8],2)))
         for instruction in out:
 
             self.ram[address] = instruction
